@@ -1,999 +1,378 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SHTV —</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
-<style>
-  :root {
-    --shtv-black: #0F0F0F;
-    --shtv-charcoal: #303030;
-    --shtv-bordeaux: #741B47;
-    --shtv-white: #FFFFFF;
-    --shtv-gold: #C9A227;
-    --shtv-gray-text: #A0A0A0;
-    --shtv-transition: 600ms cubic-bezier(0.4, 0, 0.2, 1);
-    --shtv-transition-fast: 400ms cubic-bezier(0.4, 0, 0.2, 1);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
-    background: var(--shtv-black);
-    color: var(--shtv-white);
-    -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
-  }
-
-  /* NAVIGATION */
-  .shtv-nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 24px 40px;
-    background: linear-gradient(to bottom, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0.7) 60%, transparent 100%);
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-nav.scrolled {
-    background: rgba(15,15,15,0.98);
-    padding: 16px 40px;
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-  }
-
-  .shtv-logo {
-    font-family: 'Cormorant Garamond', Georgia, serif;
-    font-size: 22px;
-    font-weight: 300;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    text-decoration: none;
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-logo:hover { color: var(--shtv-bordeaux); }
-
-  .shtv-nav-links {
-    display: flex;
-    gap: 48px;
-    list-style: none;
-  }
-
-  .shtv-nav-links a {
-    font-size: 11px;
-    font-weight: 400;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    text-decoration: none;
-    color: var(--shtv-gray-text);
-    transition: var(--shtv-transition-fast);
-    position: relative;
-  }
-
-  .shtv-nav-links a::after {
-    content: '';
-    position: absolute;
-    bottom: -4px;
-    left: 0;
-    width: 0;
-    height: 1px;
-    background: var(--shtv-bordeaux);
-    transition: var(--shtv-transition-fast);
-  }
-
-  .shtv-nav-links a:hover { color: var(--shtv-white); }
-  .shtv-nav-links a:hover::after { width: 100%; }
-
-  .shtv-nav-icons {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-  }
-
-  .shtv-icon-btn {
-    background: none;
-    border: none;
-    color: var(--shtv-gray-text);
-    cursor: pointer;
-    padding: 4px;
-    transition: var(--shtv-transition-fast);
-    display: flex;
-    align-items: center;
-  }
-
-  .shtv-icon-btn:hover { color: var(--shtv-white); }
-  .shtv-icon-btn svg { width: 20px; height: 20px; }
-
-  .shtv-cart-count {
-    position: absolute;
-    top: -2px;
-    right: -6px;
-    font-size: 9px;
-    letter-spacing: 0.05em;
-    color: var(--shtv-bordeaux);
-    font-weight: 500;
-  }
-
-  .shtv-menu-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--shtv-white);
-    cursor: pointer;
-  }
-
-  /* HERO */
-  .shtv-hero {
-    height: 100vh;
-    width: 100%;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    justify-content: flex-start;
-    overflow: hidden;
-  }
-
-  .shtv-hero-bg {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, #1a1a1a 0%, #0F0F0F 40%, #1a0a10 70%, #0F0F0F 100%);
-  }
-
-  .shtv-hero-bg::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background:
-      radial-gradient(ellipse at 30% 70%, rgba(116, 27, 71, 0.15) 0%, transparent 50%),
-      radial-gradient(ellipse at 70% 30%, rgba(201, 162, 39, 0.06) 0%, transparent 40%);
-  }
-
-  .shtv-hero-figure {
-    position: absolute;
-    right: 5%;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 45%;
-    height: 75%;
-    background: linear-gradient(160deg, #2a2a2a 0%, #1a1a1a 50%, #151515 100%);
-    clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-  }
-
-  .shtv-hero-figure::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(15,15,15,0.8) 0%, transparent 40%);
-  }
-
-  .shtv-hero-figure-inner {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 120px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.04);
-    letter-spacing: 0.1em;
-    transform: rotate(-5deg);
-    user-select: none;
-  }
-
-  .shtv-hero-content {
-    position: relative;
-    z-index: 2;
-    padding: 0 0 120px 80px;
-    max-width: 600px;
-  }
-
-  .shtv-hero-label {
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--shtv-bordeaux);
-    margin-bottom: 24px;
-    font-weight: 400;
-  }
-
-  .shtv-hero-title {
-    font-size: clamp(36px, 6vw, 72px);
-    font-weight: 300;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    line-height: 1.1;
-    margin-bottom: 32px;
-    color: var(--shtv-white);
-  }
-
-  .shtv-hero-sub {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    font-weight: 300;
-    font-style: italic;
-    color: var(--shtv-gray-text);
-    line-height: 1.6;
-    margin-bottom: 48px;
-    letter-spacing: 0.02em;
-  }
-
-  .shtv-hero-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 16px;
-    font-size: 11px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    text-decoration: none;
-    border-bottom: 1px solid var(--shtv-bordeaux);
-    padding-bottom: 8px;
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-hero-cta:hover {
-    color: var(--shtv-bordeaux);
-    border-color: var(--shtv-white);
-    gap: 24px;
-  }
-
-  .shtv-scroll-indicator {
-    position: absolute;
-    bottom: 40px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    color: var(--shtv-gray-text);
-    font-size: 9px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    animation: shtv-bounce 2s ease-in-out infinite;
-  }
-
-  @keyframes shtv-bounce {
-    0%, 100% { transform: translateX(-50%) translateY(0); }
-    50% { transform: translateX(-50%) translateY(8px); }
-  }
-
-  /* MANIFESTO */
-  .shtv-manifesto {
-    background: var(--shtv-black);
-    padding: 160px 80px;
-    text-align: center;
-    position: relative;
-  }
-
-  .shtv-manifesto::before {
-    content: '';
-    position: absolute;
-    top: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(to bottom, transparent, var(--shtv-bordeaux), transparent);
-  }
-
-  .shtv-manifesto-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(20px, 3vw, 32px);
-    font-weight: 300;
-    font-style: italic;
-    color: var(--shtv-gray-text);
-    line-height: 1.8;
-    max-width: 800px;
-    margin: 0 auto;
-    letter-spacing: 0.02em;
-  }
-
-  .shtv-manifesto-text em { color: var(--shtv-white); font-style: italic; }
-
-  .shtv-manifesto-sig {
-    margin-top: 48px;
-    font-size: 10px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--shtv-bordeaux);
-  }
-
-  /* COLLECTION */
-  .shtv-collection {
-    background: var(--shtv-black);
-    padding: 80px;
-    position: relative;
-  }
-
-  .shtv-section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 64px;
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--shtv-charcoal);
-  }
-
-  .shtv-section-title {
-    font-size: 11px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--shtv-gray-text);
-    font-weight: 400;
-  }
-
-  .shtv-section-title span { color: var(--shtv-white); font-weight: 500; }
-
-  .shtv-section-meta {
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--shtv-charcoal);
-  }
-
-  .shtv-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-    background: var(--shtv-charcoal);
-  }
-
-  .shtv-product {
-    position: relative;
-    background: var(--shtv-black);
-    aspect-ratio: 3/4;
-    overflow: hidden;
-    cursor: pointer;
-  }
-
-  .shtv-product-img {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(145deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--shtv-transition);
-    position: relative;
-  }
-
-  .shtv-product:hover .shtv-product-img {
-    transform: scale(1.03);
-    filter: brightness(1.1);
-  }
-
-  .shtv-product-img::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at center, rgba(116,27,71,0.08) 0%, transparent 70%);
-    opacity: 0;
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-product:hover .shtv-product-img::before { opacity: 1; }
-
-  .shtv-product-placeholder {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 64px;
-    font-weight: 300;
-    color: rgba(255,255,255,0.03);
-    letter-spacing: 0.1em;
-    user-select: none;
-  }
-
-  .shtv-product-info {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    padding: 32px 24px;
-    background: linear-gradient(to top, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0.6) 50%, transparent 100%);
-    opacity: 0;
-    transform: translateY(20px);
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-product:hover .shtv-product-info {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .shtv-product-name {
-    font-size: 11px;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    margin-bottom: 8px;
-    font-weight: 400;
-  }
-
-  .shtv-product-price {
-    font-size: 12px;
-    color: var(--shtv-gray-text);
-    letter-spacing: 0.1em;
-    font-weight: 300;
-  }
-
-  .shtv-product-cta {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    border: 1px solid var(--shtv-bordeaux);
-    padding: 16px 32px;
-    opacity: 0;
-    transition: var(--shtv-transition);
-    background: rgba(15,15,15,0.8);
-    pointer-events: none;
-    white-space: nowrap;
-  }
-
-  .shtv-product:hover .shtv-product-cta { opacity: 1; }
-
-  .shtv-product-tag {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--shtv-gold);
-    opacity: 0;
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-product:hover .shtv-product-tag { opacity: 1; }
-
-  /* LOOKBOOK */
-  .shtv-lookbook {
-    background: var(--shtv-black);
-    padding: 160px 80px;
-    position: relative;
-  }
-
-  .shtv-lookbook-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2px;
-    background: var(--shtv-charcoal);
-    margin-top: 64px;
-  }
-
-  .shtv-lookbook-item {
-    background: var(--shtv-black);
-    aspect-ratio: 4/5;
-    position: relative;
-    overflow: hidden;
-    cursor: pointer;
-  }
-
-  .shtv-lookbook-item.large {
-    aspect-ratio: auto;
-    grid-row: span 2;
-  }
-
-  .shtv-lookbook-img {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(160deg, #222 0%, #181818 100%);
-    transition: var(--shtv-transition);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .shtv-lookbook-item:hover .shtv-lookbook-img {
-    transform: scale(1.02);
-    filter: brightness(1.05);
-  }
-
-  .shtv-lookbook-label {
-    position: absolute;
-    bottom: 32px;
-    left: 32px;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    opacity: 0;
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-lookbook-item:hover .shtv-lookbook-label { opacity: 1; }
-
-  /* EDITORIAL */
-  .shtv-editorial {
-    background: var(--shtv-black);
-    padding: 200px 80px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 120px;
-    align-items: center;
-  }
-
-  .shtv-editorial-img {
-    aspect-ratio: 4/5;
-    background: linear-gradient(135deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .shtv-editorial-img::after {
-    content: 'SHTV';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 80px;
-    color: rgba(255,255,255,0.03);
-    letter-spacing: 0.2em;
-  }
-
-  .shtv-editorial-content h3 {
-    font-size: 11px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--shtv-bordeaux);
-    margin-bottom: 32px;
-    font-weight: 400;
-  }
-
-  .shtv-editorial-content p {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px;
-    font-weight: 300;
-    line-height: 1.8;
-    color: var(--shtv-gray-text);
-    margin-bottom: 24px;
-  }
-
-  .shtv-editorial-content p strong {
-    color: var(--shtv-white);
-    font-weight: 400;
-  }
-
-  .shtv-editorial-cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    margin-top: 32px;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--shtv-gray-text);
-    text-decoration: none;
-    transition: var(--shtv-transition-fast);
-  }
-
-  .shtv-editorial-cta:hover { color: var(--shtv-white); gap: 20px; }
-
-  /* FOOTER */
-  .shtv-footer {
-    background: var(--shtv-black);
-    border-top: 1px solid var(--shtv-charcoal);
-    padding: 80px;
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 64px;
-  }
-
-  .shtv-footer-brand {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 18px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    margin-bottom: 24px;
-  }
-
-  .shtv-footer-desc {
-    font-size: 12px;
-    line-height: 1.8;
-    color: var(--shtv-charcoal);
-    max-width: 280px;
-  }
-
-  .shtv-footer-col h4 {
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--shtv-gray-text);
-    margin-bottom: 24px;
-    font-weight: 400;
-  }
-
-  .shtv-footer-col ul { list-style: none; }
-  .shtv-footer-col li { margin-bottom: 12px; }
-
-  .shtv-footer-col a {
-    font-size: 12px;
-    color: var(--shtv-charcoal);
-    text-decoration: none;
-    transition: var(--shtv-transition-fast);
-  }
-
-  .shtv-footer-col a:hover { color: var(--shtv-white); }
-
-  .shtv-footer-newsletter {
-    margin-top: 32px;
-    display: flex;
-    gap: 0;
-    border-bottom: 1px solid var(--shtv-charcoal);
-    padding-bottom: 8px;
-  }
-
-  .shtv-footer-newsletter input {
-    background: none;
-    border: none;
-    color: var(--shtv-white);
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    flex: 1;
-    outline: none;
-    font-family: inherit;
-  }
-
-  .shtv-footer-newsletter input::placeholder { color: var(--shtv-charcoal); }
-
-  .shtv-footer-newsletter button {
-    background: none;
-    border: none;
-    color: var(--shtv-bordeaux);
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: var(--shtv-transition-fast);
-    font-family: inherit;
-  }
-
-  .shtv-footer-newsletter button:hover { color: var(--shtv-white); }
-
-  .shtv-footer-bottom {
-    grid-column: 1 / -1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-top: 48px;
-    border-top: 1px solid var(--shtv-charcoal);
-    margin-top: 32px;
-  }
-
-  .shtv-footer-copy {
-    font-size: 10px;
-    color: var(--shtv-charcoal);
-    letter-spacing: 0.1em;
-  }
-
-  .shtv-footer-legal { display: flex; gap: 32px; }
-
-  .shtv-footer-legal a {
-    font-size: 10px;
-    color: var(--shtv-charcoal);
-    text-decoration: none;
-    letter-spacing: 0.1em;
-    transition: var(--shtv-transition-fast);
-  }
-
-  .shtv-footer-legal a:hover { color: var(--shtv-gray-text); }
-
-  /* MOBILE MENU */
-  .shtv-mobile-menu {
-    position: fixed;
-    inset: 0;
-    background: var(--shtv-black);
-    z-index: 200;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 32px;
-    opacity: 0;
-    pointer-events: none;
-    transition: var(--shtv-transition);
-  }
-
-  .shtv-mobile-menu.active { opacity: 1; pointer-events: all; }
-
-  .shtv-mobile-menu a {
-    font-size: 14px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: var(--shtv-white);
-    text-decoration: none;
-    transition: var(--shtv-transition-fast);
-  }
-
-  .shtv-mobile-menu a:hover { color: var(--shtv-bordeaux); }
-
-  .shtv-mobile-close {
-    position: absolute;
-    top: 24px;
-    right: 24px;
-    background: none;
-    border: none;
-    color: var(--shtv-white);
-    cursor: pointer;
-  }
-
-  /* RESPONSIVE */
-  @media (max-width: 1024px) {
-    .shtv-grid { grid-template-columns: repeat(2, 1fr); }
-    .shtv-lookbook-grid { grid-template-columns: 1fr 1fr; }
-    .shtv-lookbook-item.large { grid-row: span 1; aspect-ratio: 4/5; }
-    .shtv-editorial { grid-template-columns: 1fr; gap: 64px; }
-    .shtv-footer { grid-template-columns: 1fr 1fr; }
-  }
-
-  @media (max-width: 768px) {
-    .shtv-nav { padding: 16px 24px; }
-    .shtv-nav-links { display: none; }
-    .shtv-menu-toggle { display: block; }
-    .shtv-hero-content { padding: 0 24px 80px 24px; }
-    .shtv-hero-figure { width: 80%; right: -20%; opacity: 0.4; }
-    .shtv-collection { padding: 40px 24px; }
-    .shtv-grid { grid-template-columns: 1fr; }
-    .shtv-manifesto { padding: 100px 24px; }
-    .shtv-lookbook { padding: 100px 24px; }
-    .shtv-lookbook-grid { grid-template-columns: 1fr; }
-    .shtv-editorial { padding: 100px 24px; }
-    .shtv-footer { grid-template-columns: 1fr; padding: 60px 24px; }
-    .shtv-footer-bottom { flex-direction: column; gap: 16px; align-items: flex-start; }
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHTV — Official Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --black: #000000; --white: #ffffff; --gray: #888888; --light-gray: #f5f5f5;
+            --font-display: 'Bebas Neue', sans-serif; --font-body: 'Inter', sans-serif;
+        }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-body); background: var(--black); color: var(--white); overflow-x: hidden; }
+
+        /* ===== NAVIGATION ===== */
+        .nav {
+            position: fixed; top: 0; left: 0; width: 100%; z-index: 1000;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 32px; height: 64px;
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255,255,255,0.08); transition: all 0.4s ease;
+        }
+        .nav-left { display: flex; align-items: center; gap: 28px; flex: 1; }
+        .nav-hamburger {
+            background: none; border: none; cursor: pointer; padding: 4px;
+            display: flex; flex-direction: column; gap: 5px;
+        }
+        .nav-hamburger span { display: block; width: 22px; height: 1.5px; background: var(--white); transition: all 0.3s; }
+        .nav-categories { display: flex; gap: 28px; }
+        .nav-categories a {
+            font-family: var(--font-display); font-size: 13px; letter-spacing: 2.5px;
+            color: var(--white); text-decoration: none; text-transform: uppercase;
+            opacity: 0.85; transition: opacity 0.3s; white-space: nowrap;
+        }
+        .nav-categories a:hover { opacity: 1; }
+        .nav-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; justify-content: center; }
+        .nav-logo-img { height: 32px; width: auto; cursor: pointer; transition: opacity 0.3s; }
+        .nav-logo-img:hover { opacity: 0.8; }
+        .nav-right { display: flex; align-items: center; gap: 24px; flex: 1; justify-content: flex-end; }
+        .nav-link {
+            font-family: var(--font-display); font-size: 13px; letter-spacing: 2px;
+            color: var(--white); text-decoration: none; text-transform: uppercase;
+            opacity: 0.85; transition: opacity 0.3s; white-space: nowrap;
+            background: none; border: none; cursor: pointer; display: flex; align-items: center; gap: 6px;
+        }
+        .nav-link:hover { opacity: 1; }
+        .nav-link svg { width: 10px; height: 10px; stroke: var(--white); fill: none; stroke-width: 2; }
+        .nav-icon-btn { background: none; border: none; cursor: pointer; padding: 4px; position: relative; color: var(--white); }
+        .nav-icon-btn svg { width: 22px; height: 22px; stroke: currentColor; fill: none; stroke-width: 1.5; }
+        .cart-count {
+            position: absolute; top: -6px; right: -6px; background: var(--white); color: var(--black);
+            font-size: 9px; font-weight: 700; width: 16px; height: 16px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        @media (max-width: 1024px) { .nav-categories { display: none; } .nav-link { display: none; } .nav { padding: 0 20px; } }
+        @media (max-width: 640px) { .nav-right { gap: 16px; } }
+
+        /* ===== HERO ===== */
+        .hero {
+            position: relative; width: 100%; height: 100vh; overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: url('https://images.unsplash.com/photo-1556906781-9a412961c28c?q=80&w=2574&auto=format&fit=crop') center/cover no-repeat;
+            filter: brightness(0.35);
+        }
+        .hero-content { position: relative; z-index: 2; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 24px; }
+        .hero-logo { width: clamp(220px, 40vw, 560px); height: auto; }
+        .hero-tagline { font-family: var(--font-display); font-size: clamp(14px, 2vw, 18px); letter-spacing: 6px; color: var(--white); text-transform: uppercase; opacity: 0.7; }
+        .scroll-indicator {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%); z-index: 2;
+            animation: bounce 2.5s infinite; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer;
+        }
+        .scroll-indicator span { font-family: var(--font-display); font-size: 11px; letter-spacing: 3px; color: var(--white); opacity: 0.6; text-transform: uppercase; }
+        .scroll-indicator svg { width: 24px; height: 24px; stroke: var(--white); fill: none; stroke-width: 1.5; opacity: 0.6; }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateX(-50%) translateY(0); }
+            40% { transform: translateX(-50%) translateY(-12px); }
+            60% { transform: translateX(-50%) translateY(-6px); }
+        }
+
+        /* ===== SHOP ===== */
+        .shop { background: var(--black); min-height: 100vh; padding: 100px 32px 80px; }
+        .shop-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; flex-wrap: wrap; gap: 16px; }
+        .shop-title { font-family: var(--font-display); font-size: 14px; letter-spacing: 3px; color: var(--gray); text-transform: uppercase; }
+        .shop-filters { display: flex; gap: 32px; flex-wrap: wrap; }
+        .filter-link {
+            font-family: var(--font-display); font-size: 14px; letter-spacing: 2px; color: var(--gray);
+            text-transform: uppercase; cursor: pointer; transition: color 0.3s; background: none; border: none;
+        }
+        .filter-link:hover, .filter-link.active { color: var(--white); }
+        .product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+        @media (max-width: 1024px) { .product-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 640px) { .product-grid { grid-template-columns: 1fr; } .shop { padding: 80px 16px 60px; } }
+
+        .product-card { cursor: pointer; transition: transform 0.3s ease; }
+        .product-card:hover { transform: translateY(-4px); }
+        .product-card:hover .product-img { filter: brightness(1.1); transform: scale(1.02); }
+        .product-img-wrap { position: relative; width: 100%; aspect-ratio: 1; background: #111; overflow: hidden; margin-bottom: 16px; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; transition: filter 0.3s ease, transform 0.5s ease; }
+        .product-name { font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 4px; line-height: 1.2; }
+        .product-price { font-family: var(--font-body); font-size: 14px; font-weight: 600; color: var(--gray); }
+
+        /* ===== PRODUCT DETAIL ===== */
+        .product-detail {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--white); z-index: 2000; display: none; overflow-y: auto;
+        }
+        .product-detail.active { display: block; animation: slideUp 0.4s ease; }
+        @keyframes slideUp { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .pd-inner { min-height: 100vh; display: grid; grid-template-columns: 1.2fr 1fr; gap: 0; }
+        @media (max-width: 1024px) { .pd-inner { grid-template-columns: 1fr; } }
+        .pd-gallery { background: var(--light-gray); display: flex; align-items: center; justify-content: center; padding: 80px 40px; position: relative; }
+        .pd-img { max-width: 100%; max-height: 70vh; object-fit: contain; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15)); }
+        .pd-info { padding: 80px 60px; display: flex; flex-direction: column; justify-content: center; }
+        @media (max-width: 1024px) { .pd-info { padding: 40px 24px 80px; } .pd-gallery { padding: 100px 24px 40px; } }
+        .pd-close { position: absolute; top: 24px; right: 32px; background: none; border: none; cursor: pointer; z-index: 10; padding: 8px; }
+        .pd-close svg { width: 28px; height: 28px; stroke: var(--black); stroke-width: 1.5; }
+        .pd-category { font-family: var(--font-display); font-size: 13px; letter-spacing: 3px; color: var(--gray); text-transform: uppercase; margin-bottom: 12px; }
+        .pd-name { font-family: var(--font-display); font-size: clamp(32px, 5vw, 56px); letter-spacing: 2px; color: var(--black); text-transform: uppercase; line-height: 1; margin-bottom: 16px; }
+        .pd-price { font-family: var(--font-body); font-size: 20px; font-weight: 600; color: var(--black); margin-bottom: 48px; }
+        .pd-label { font-family: var(--font-display); font-size: 12px; letter-spacing: 2px; color: var(--gray); text-transform: uppercase; margin-bottom: 12px; }
+        .pd-sizes { display: flex; gap: 8px; margin-bottom: 40px; flex-wrap: wrap; }
+        .size-btn { width: 48px; height: 48px; border: 1px solid #ddd; background: var(--white); font-family: var(--font-body); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s; color: var(--black); }
+        .size-btn:hover { border-color: var(--black); }
+        .size-btn.active { background: var(--black); color: var(--white); border-color: var(--black); }
+        .pd-actions { display: flex; gap: 16px; margin-bottom: 48px; }
+        .qty-selector { display: flex; align-items: center; border: 1px solid #ddd; height: 56px; }
+        .qty-btn { width: 48px; height: 100%; background: none; border: none; font-size: 18px; cursor: pointer; color: var(--black); }
+        .qty-value { width: 48px; text-align: center; font-weight: 600; font-size: 14px; color: var(--black); }
+        .add-cart-btn { flex: 1; height: 56px; background: var(--black); color: var(--white); border: none; font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: opacity 0.3s; }
+        .add-cart-btn:hover { opacity: 0.85; }
+        .pd-desc { font-size: 14px; line-height: 1.7; color: var(--gray); max-width: 400px; }
+
+        /* ===== CART DRAWER ===== */
+        .cart-drawer { position: fixed; top: 0; right: -420px; width: 420px; max-width: 100%; height: 100%; background: var(--white); z-index: 3000; transition: right 0.4s ease; display: flex; flex-direction: column; }
+        .cart-drawer.open { right: 0; }
+        .cart-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 2500; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        .cart-overlay.open { opacity: 1; pointer-events: all; }
+        .cart-header { display: flex; justify-content: space-between; align-items: center; padding: 24px 32px; border-bottom: 1px solid #eee; }
+        .cart-title { font-family: var(--font-display); font-size: 20px; letter-spacing: 2px; color: var(--black); }
+        .cart-close { background: none; border: none; cursor: pointer; }
+        .cart-close svg { width: 24px; height: 24px; stroke: var(--black); stroke-width: 1.5; }
+        .cart-items { flex: 1; overflow-y: auto; padding: 24px 32px; }
+        .cart-empty { text-align: center; color: var(--gray); font-size: 14px; margin-top: 40px; }
+        .cart-item { display: flex; gap: 16px; margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid #eee; }
+        .cart-item-img { width: 80px; height: 80px; object-fit: cover; background: var(--light-gray); }
+        .cart-item-info { flex: 1; }
+        .cart-item-name { font-family: var(--font-display); font-size: 16px; letter-spacing: 1px; color: var(--black); margin-bottom: 4px; }
+        .cart-item-meta { font-size: 12px; color: var(--gray); margin-bottom: 8px; }
+        .cart-item-price { font-weight: 600; font-size: 14px; color: var(--black); }
+        .cart-footer { padding: 24px 32px; border-top: 1px solid #eee; }
+        .cart-subtotal { display: flex; justify-content: space-between; margin-bottom: 16px; font-family: var(--font-display); font-size: 18px; letter-spacing: 1px; color: var(--black); }
+        .checkout-btn { width: 100%; height: 56px; background: var(--black); color: var(--white); border: none; font-family: var(--font-body); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; }
+
+        /* ===== MOBILE MENU ===== */
+        .mobile-menu { position: fixed; top: 0; left: -100%; width: 100%; height: 100%; background: var(--black); z-index: 3000; transition: left 0.4s ease; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 32px; }
+        .mobile-menu.open { left: 0; }
+        .mobile-menu a { font-family: var(--font-display); font-size: 32px; letter-spacing: 3px; color: var(--white); text-decoration: none; text-transform: uppercase; transition: opacity 0.3s; }
+        .mobile-menu a:hover { opacity: 0.6; }
+        .menu-close { position: absolute; top: 20px; left: 32px; background: none; border: none; cursor: pointer; }
+        .menu-close svg { width: 28px; height: 28px; stroke: var(--white); stroke-width: 1.5; }
+    </style>
+<base target="_blank">
 </head>
 <body>
 
-<nav class="shtv-nav" id="shtv-nav">
-  <a href="#" class="shtv-logo">SHTV</a>
-  <ul class="shtv-nav-links">
-    <li><a href="#coleccion">Colección</a></li>
-    <li><a href="#lookbook">Lookbook</a></li>
-    <li><a href="#filosofia">Filosofía</a></li>
-    <li><a href="#cuenta">Cuenta</a></li>
-  </ul>
-  <div class="shtv-nav-icons">
-    <button class="shtv-icon-btn" aria-label="Buscar">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.35-4.35"/></svg>
-    </button>
-    <button class="shtv-icon-btn" aria-label="Carrito" style="position:relative;">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6L5 3H2"/></svg>
-      <span class="shtv-cart-count">3</span>
-    </button>
-    <button class="shtv-menu-toggle" id="shtv-menu-toggle" aria-label="Menú">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-    </button>
-  </div>
-</nav>
+    <!-- Navigation -->
+    <nav class="nav" id="navbar">
+        <div class="nav-left">
+            <button class="nav-hamburger" onclick="toggleMenu()" aria-label="Menu">
+                <span></span><span></span><span></span>
+            </button>
+            <div class="nav-categories">
+                <a href="#shop" onclick="scrollToShop()">Hoodies</a>
+                <a href="#shop" onclick="scrollToShop()">Tracksuits</a>
+                <a href="#shop" onclick="scrollToShop()">Camisas</a>
+                <a href="#shop" onclick="scrollToShop()">Denim & Cargos</a>
+            </div>
+        </div>
+        <div class="nav-center">
+            <img src="data:image/png;base64,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" alt="SHTV" class="nav-logo-img" onclick="window.scrollTo({top:0,behavior:'smooth'})">
+        </div>
+        <div class="nav-right">
+            <a href="#" class="nav-link" onclick="scrollToShop()">SK Miembros</a>
+            <button class="nav-link" onclick="scrollToShop()">COP <svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+            <button class="nav-link" onclick="scrollToShop()">CO</button>
+            <button class="nav-icon-btn" onclick="scrollToShop()" aria-label="Search">
+                <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </button>
+            <button class="nav-icon-btn" onclick="toggleCart()" aria-label="Cart">
+                <svg viewBox="0 0 24 24"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6L5 3H2"/></svg>
+                <span class="cart-count" id="cartCount" style="display:none">0</span>
+            </button>
+        </div>
+    </nav>
 
-<div class="shtv-mobile-menu" id="shtv-mobile-menu">
-  <button class="shtv-mobile-close" id="shtv-mobile-close">
-    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
-  </button>
-  <a href="#coleccion">Colección</a>
-  <a href="#lookbook">Lookbook</a>
-  <a href="#filosofia">Filosofía</a>
-  <a href="#cuenta">Cuenta</a>
-</div>
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu">
+        <button class="menu-close" onclick="toggleMenu()">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <a href="#" onclick="scrollToShop(); toggleMenu();">Hoodies</a>
+        <a href="#" onclick="scrollToShop(); toggleMenu();">Tracksuits</a>
+        <a href="#" onclick="scrollToShop(); toggleMenu();">Camisas</a>
+        <a href="#" onclick="scrollToShop(); toggleMenu();">Denim & Cargos</a>
+        <a href="#" onclick="scrollToShop(); toggleMenu();">SK Miembros</a>
+    </div>
 
-<section class="shtv-hero" id="inicio">
-  <div class="shtv-hero-bg"></div>
-  <div class="shtv-hero-figure">
-    <div class="shtv-hero-figure-inner">SHTV</div>
-  </div>
-  <div class="shtv-hero-content">
-    <div class="shtv-hero-label">Drop N°07 — Otoño 2026</div>
-    <h1 class="shtv-hero-title">Silencio<br>como forma</h1>
-    <p class="shtv-hero-sub">Prendas construidas para quienes entienden que la ausencia de ruido es el lenguaje más preciso del lujo contemporáneo.</p>
-    <a href="#coleccion" class="shtv-hero-cta">
-      Explorar colección
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-  <div class="shtv-scroll-indicator">
-    <span>Scroll</span>
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
-  </div>
-</section>
+    <!-- Cart Overlay -->
+    <div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
 
-<section class="shtv-manifesto" id="filosofia">
-  <p class="shtv-manifesto-text">
-    "No diseñamos para ser vistos. Diseñamos para ser <em>recordados</em> por quienes entienden que la distinción no necesita permiso ni explicación."
-  </p>
-  <div class="shtv-manifesto-sig">— Manifiesto SHTV</div>
-</section>
+    <!-- Cart Drawer -->
+    <div class="cart-drawer" id="cartDrawer">
+        <div class="cart-header">
+            <span class="cart-title">Your Bag</span>
+            <button class="cart-close" onclick="toggleCart()">
+                <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+            </button>
+        </div>
+        <div class="cart-items" id="cartItems">
+            <div class="cart-empty">Your bag is empty</div>
+        </div>
+        <div class="cart-footer" id="cartFooter" style="display:none">
+            <div class="cart-subtotal">
+                <span>Subtotal</span>
+                <span id="cartTotal">$0.00</span>
+            </div>
+            <button class="checkout-btn">Checkout</button>
+        </div>
+    </div>
 
-<section class="shtv-collection" id="coleccion">
-  <div class="shtv-section-header">
-    <h2 class="shtv-section-title"><span>Colección</span> — Drop N°07</h2>
-    <span class="shtv-section-meta">Edición limitada — 12 piezas</span>
-  </div>
-  <div class="shtv-grid">
-    <div class="shtv-product">
-      <div class="shtv-product-img"><span class="shtv-product-placeholder">I</span></div>
-      <div class="shtv-product-info">
-        <div class="shtv-product-name">Sobretodo Carbón</div>
-        <div class="shtv-product-price">€ 890</div>
-      </div>
-      <div class="shtv-product-cta">Añadir</div>
-      <div class="shtv-product-tag">Stock limitado</div>
-    </div>
-    <div class="shtv-product">
-      <div class="shtv-product-img"><span class="shtv-product-placeholder">II</span></div>
-      <div class="shtv-product-info">
-        <div class="shtv-product-name">Pantalón Ancho</div>
-        <div class="shtv-product-price">€ 420</div>
-      </div>
-      <div class="shtv-product-cta">Añadir</div>
-    </div>
-    <div class="shtv-product">
-      <div class="shtv-product-img"><span class="shtv-product-placeholder">III</span></div>
-      <div class="shtv-product-info">
-        <div class="shtv-product-name">Camisa Estructura</div>
-        <div class="shtv-product-price">€ 310</div>
-      </div>
-      <div class="shtv-product-cta">Añadir</div>
-      <div class="shtv-product-tag">Nuevo</div>
-    </div>
-    <div class="shtv-product">
-      <div class="shtv-product-img"><span class="shtv-product-placeholder">IV</span></div>
-      <div class="shtv-product-info">
-        <div class="shtv-product-name">Chaleco Lana</div>
-        <div class="shtv-product-price">€ 560</div>
-      </div>
-      <div class="shtv-product-cta">Añadir</div>
-    </div>
-    <div class="shtv-product">
-      <div class="shtv-product-img"><span class="shtv-product-placeholder">V</span></div>
-      <div class="shtv-product-info">
-        <div class="shtv-product-name">Cinturón Piel</div>
-        <div class="shtv-product-price">€ 180</div>
-      </div>
-      <div class="shtv-product-cta">Añadir</div>
-    </div>
-    <div class="shtv-product">
-      <div class="shtv-product-img"><span class="shtv-product-placeholder">VI</span></div>
-      <div class="shtv-product-info">
-        <div class="shtv-product-name">Botín Chelsea</div>
-        <div class="shtv-product-price">€ 640</div>
-      </div>
-      <div class="shtv-product-cta">Añadir</div>
-      <div class="shtv-product-tag">Edición N°3 de 12</div>
-    </div>
-  </div>
-</section>
+    <!-- Hero -->
+    <section class="hero" id="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-content">
+            <img src="data:image/png;base64,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" alt="SHTV" class="hero-logo">
+            <p class="hero-tagline">Official Store</p>
+        </div>
+        <div class="scroll-indicator" onclick="scrollToShop()">
+            <span>Scroll</span>
+            <svg viewBox="0 0 24 24"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </div>
+    </section>
 
-<section class="shtv-lookbook" id="lookbook">
-  <div class="shtv-section-header">
-    <h2 class="shtv-section-title"><span>Lookbook</span> — Otoño 2026</h2>
-    <span class="shtv-section-meta">Fotografía — Estudio SHTV</span>
-  </div>
-  <div class="shtv-lookbook-grid">
-    <div class="shtv-lookbook-item large">
-      <div class="shtv-lookbook-img"><span class="shtv-product-placeholder" style="font-size:100px;">01</span></div>
-      <div class="shtv-lookbook-label">Encuadre cerrado — Movimiento</div>
+    <!-- Shop -->
+    <section class="shop" id="shop">
+        <div class="shop-header">
+            <span class="shop-title">All Products</span>
+            <div class="shop-filters">
+                <button class="filter-link active" onclick="filterProducts('all', this)">All</button>
+                <button class="filter-link" onclick="filterProducts('Tops', this)">Tops</button>
+                <button class="filter-link" onclick="filterProducts('Bottoms', this)">Bottoms</button>
+                <button class="filter-link" onclick="filterProducts('Accessories', this)">Accessories</button>
+            </div>
+        </div>
+        <div class="product-grid" id="productGrid"></div>
+    </section>
+
+    <!-- Product Detail -->
+    <div class="product-detail" id="productDetail">
+        <button class="pd-close" onclick="closeProduct()">
+            <svg viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <div class="pd-inner" id="pdInner"></div>
     </div>
-    <div class="shtv-lookbook-item">
-      <div class="shtv-lookbook-img"><span class="shtv-product-placeholder">02</span></div>
-      <div class="shtv-lookbook-label">Caída de tela</div>
-    </div>
-    <div class="shtv-lookbook-item">
-      <div class="shtv-lookbook-img"><span class="shtv-product-placeholder">03</span></div>
-      <div class="shtv-lookbook-label">Detalle bordó</div>
-    </div>
-  </div>
-</section>
 
-<section class="shtv-editorial">
-  <div class="shtv-editorial-img"></div>
-  <div class="shtv-editorial-content">
-    <h3>Filosofía de marca</h3>
-    <p>Cada pieza de <strong>SHTV</strong> se concibe como un objeto editorial, no como una unidad de stock. Rechazamos la urgencia visual del fast fashion en favor de una permanencia que solo entiende quien valora el silencio.</p>
-    <p>Nuestros drops son ediciones numeradas. Cuando una pieza agota, no se reproduce. No hay re-stock. No hay contadores falsos. Solo la certeza de que poseer algo que no todos podrán.</p>
-    <a href="#" class="shtv-editorial-cta">
-      Leer manifiesto completo
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-    </a>
-  </div>
-</section>
+    <script>
+        const products = [
+            { id: 1, name: "Allstars Football Jersey", price: 75, category: "Tops", image: "https://placehold.co/600x600/111/fff?text=JERSEY+01", sizes: ["S","M","L","XL"] },
+            { id: 2, name: "Reversible Bolt Jersey", price: 80, category: "Tops", image: "https://placehold.co/600x600/1a1a1a/fff?text=JERSEY+02", sizes: ["S","M","L","XL"] },
+            { id: 3, name: "England Allstars Jersey", price: 75, category: "Tops", image: "https://placehold.co/600x600/222/fff?text=JERSEY+03", sizes: ["S","M","L","XL"] },
+            { id: 4, name: "Oversized Hoodie Black", price: 95, category: "Tops", image: "https://placehold.co/600x600/0a0a0a/fff?text=HOODIE+01", sizes: ["S","M","L","XL"] },
+            { id: 5, name: "Cargo Pants V2", price: 110, category: "Bottoms", image: "https://placehold.co/600x600/151515/fff?text=CARGO+01", sizes: ["28","30","32","34","36"] },
+            { id: 6, name: "Track Jacket", price: 120, category: "Tops", image: "https://placehold.co/600x600/1f1f1f/fff?text=JACKET+01", sizes: ["S","M","L","XL"] },
+            { id: 7, name: "Mesh Shorts", price: 55, category: "Bottoms", image: "https://placehold.co/600x600/181818/fff?text=SHORTS+01", sizes: ["S","M","L","XL"] },
+            { id: 8, name: "Logo Beanie", price: 35, category: "Accessories", image: "https://placehold.co/600x600/111/fff?text=BEANIE+01", sizes: ["ONE SIZE"] },
+            { id: 9, name: "Crossbody Bag", price: 65, category: "Accessories", image: "https://placehold.co/600x600/222/fff?text=BAG+01", sizes: ["ONE SIZE"] },
+        ];
 
-<footer class="shtv-footer">
-  <div>
-    <div class="shtv-footer-brand">SHTV</div>
-    <p class="shtv-footer-desc">Moda editorial de lujo silencioso. Drops numerados, piezas irrepetibles, silencio como lenguaje.</p>
-    <div class="shtv-footer-newsletter">
-      <input type="email" placeholder="Email para acceso exclusivo">
-      <button>Unirse</button>
-    </div>
-  </div>
-  <div class="shtv-footer-col">
-    <h4>Navegar</h4>
-    <ul>
-      <li><a href="#coleccion">Colección</a></li>
-      <li><a href="#lookbook">Lookbook</a></li>
-      <li><a href="#filosofia">Filosofía</a></li>
-      <li><a href="#">Archivo</a></li>
-    </ul>
-  </div>
-  <div class="shtv-footer-col">
-    <h4>Legal</h4>
-    <ul>
-      <li><a href="#">Envíos</a></li>
-      <li><a href="#">Devoluciones</a></li>
-      <li><a href="#">Privacidad</a></li>
-      <li><a href="#">Términos</a></li>
-    </ul>
-  </div>
-  <div class="shtv-footer-col">
-    <h4>Contacto</h4>
-    <ul>
-      <li><a href="#">Atención al cliente</a></li>
-      <li><a href="#">Prensa</a></li>
-      <li><a href="#">Mayoristas</a></li>
-    </ul>
-  </div>
-  <div class="shtv-footer-bottom">
-    <span class="shtv-footer-copy">© 2026 SHTV. Todos los derechos reservados.</span>
-    <div class="shtv-footer-legal">
-      <a href="#">Privacidad</a>
-      <a href="#">Cookies</a>
-      <a href="#">Accesibilidad</a>
-    </div>
-  </div>
-</footer>
+        let cart = [], currentProduct = null, selectedSize = null, currentQty = 1, currentFilter = 'all';
 
-<script>
-  (function() {
-    const nav = document.getElementById('shtv-nav');
-    const menuToggle = document.getElementById('shtv-menu-toggle');
-    const mobileMenu = document.getElementById('shtv-mobile-menu');
-    const mobileClose = document.getElementById('shtv-mobile-close');
-
-    window.addEventListener('scroll', function() {
-      if (window.scrollY > 50) nav.classList.add('scrolled');
-      else nav.classList.remove('scrolled');
-    });
-
-    if (menuToggle && mobileMenu) {
-      menuToggle.addEventListener('click', () => mobileMenu.classList.add('active'));
-      mobileClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
-    }
-
-    // IntersectionObserver para animaciones de entrada
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
+        function renderShop(filter = 'all') {
+            const grid = document.getElementById('productGrid');
+            const filtered = filter === 'all' ? products : products.filter(p => p.category === filter);
+            grid.innerHTML = filtered.map(p => `
+                <div class="product-card" onclick="openProduct(${p.id})">
+                    <div class="product-img-wrap"><img src="${p.image}" alt="${p.name}" class="product-img" loading="lazy"></div>
+                    <div class="product-name">${p.name}</div>
+                    <div class="product-price">$${p.price.toFixed(2)}</div>
+                </div>
+            `).join('');
         }
-      });
-    }, { threshold: 0.1 });
 
-    document.querySelectorAll('.shtv-product, .shtv-manifesto, .shtv-editorial').forEach(el => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(30px)';
-      el.style.transition = 'opacity 800ms cubic-bezier(0.4,0,0.2,1), transform 800ms cubic-bezier(0.4,0,0.2,1)';
-      observer.observe(el);
-    });
-  })();
-</script>
+        function filterProducts(category, btn) {
+            currentFilter = category;
+            document.querySelectorAll('.filter-link').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderShop(category);
+        }
 
+        function scrollToShop() {
+            document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function openProduct(id) {
+            currentProduct = products.find(p => p.id === id);
+            selectedSize = currentProduct.sizes[0]; currentQty = 1;
+            document.getElementById('pdInner').innerHTML = `
+                <div class="pd-gallery"><img src="${currentProduct.image}" alt="${currentProduct.name}" class="pd-img"></div>
+                <div class="pd-info">
+                    <div class="pd-category">${currentProduct.category}</div>
+                    <h1 class="pd-name">${currentProduct.name}</h1>
+                    <div class="pd-price">$${currentProduct.price.toFixed(2)}</div>
+                    <div class="pd-label">Select Size</div>
+                    <div class="pd-sizes">
+                        ${currentProduct.sizes.map(s => `<button class="size-btn ${s === selectedSize ? 'active' : ''}" onclick="selectSize('${s}', this)">${s}</button>`).join('')}
+                    </div>
+                    <div class="pd-actions">
+                        <div class="qty-selector">
+                            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+                            <div class="qty-value" id="qtyValue">1</div>
+                            <button class="qty-btn" onclick="changeQty(1)">+</button>
+                        </div>
+                        <button class="add-cart-btn" onclick="addToCart()">Add to Cart</button>
+                    </div>
+                    <p class="pd-desc">Premium streetwear piece crafted for everyday wear. Oversized fit with heavyweight fabric. Designed and produced in-house.</p>
+                </div>`;
+            document.getElementById('productDetail').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeProduct() { document.getElementById('productDetail').classList.remove('active'); document.body.style.overflow = ''; }
+        function selectSize(size, btn) { selectedSize = size; document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); }
+        function changeQty(delta) { currentQty = Math.max(1, currentQty + delta); document.getElementById('qtyValue').textContent = currentQty; }
+
+        function addToCart() {
+            const existing = cart.find(item => item.id === currentProduct.id && item.size === selectedSize);
+            if (existing) existing.qty += currentQty;
+            else cart.push({ id: currentProduct.id, name: currentProduct.name, price: currentProduct.price, size: selectedSize, qty: currentQty, image: currentProduct.image });
+            updateCart(); toggleCart(); closeProduct();
+        }
+
+        function updateCart() {
+            const count = cart.reduce((sum, item) => sum + item.qty, 0);
+            const countEl = document.getElementById('cartCount');
+            countEl.textContent = count; countEl.style.display = count > 0 ? 'flex' : 'none';
+            const itemsContainer = document.getElementById('cartItems');
+            const footer = document.getElementById('cartFooter');
+            if (cart.length === 0) { itemsContainer.innerHTML = '<div class="cart-empty">Your bag is empty</div>'; footer.style.display = 'none'; return; }
+            footer.style.display = 'block';
+            itemsContainer.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <img src="${item.image}" class="cart-item-img" alt="">
+                    <div class="cart-item-info">
+                        <div class="cart-item-name">${item.name}</div>
+                        <div class="cart-item-meta">Size: ${item.size} / Qty: ${item.qty}</div>
+                        <div class="cart-item-price">$${(item.price * item.qty).toFixed(2)}</div>
+                    </div>
+                </div>`).join('');
+            document.getElementById('cartTotal').textContent = '$' + cart.reduce((sum, item) => sum + item.price * item.qty, 0).toFixed(2);
+        }
+
+        function toggleCart() { document.getElementById('cartDrawer').classList.toggle('open'); document.getElementById('cartOverlay').classList.toggle('open'); }
+        function toggleMenu() { document.getElementById('mobileMenu').classList.toggle('open'); }
+
+        renderShop(); updateCart();
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') { closeProduct(); document.getElementById('cartDrawer').classList.remove('open'); document.getElementById('cartOverlay').classList.remove('open'); document.getElementById('mobileMenu').classList.remove('open'); }
+        });
+    </script>
 </body>
 </html>
