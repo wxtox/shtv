@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHTV — Silencio como forma</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --shtv-black: #0F0F0F;
+    --shtv-charcoal: #303030;
+    --shtv-bordeaux: #741B47;
+    --shtv-white: #FFFFFF;
+    --shtv-gold: #C9A227;
+    --shtv-gray-text: #A0A0A0;
+    --shtv-transition: 600ms cubic-bezier(0.4, 0, 0.2, 1);
+    --shtv-transition-fast: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--shtv-black);
+    color: var(--shtv-white);
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* NAVIGATION */
+  .shtv-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px 40px;
+    background: linear-gradient(to bottom, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0.7) 60%, transparent 100%);
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-nav.scrolled {
+    background: rgba(15,15,15,0.98);
+    padding: 16px 40px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
+
+  .shtv-logo {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 22px;
+    font-weight: 300;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    text-decoration: none;
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-logo:hover { color: var(--shtv-bordeaux); }
+
+  .shtv-nav-links {
+    display: flex;
+    gap: 48px;
+    list-style: none;
+  }
+
+  .shtv-nav-links a {
+    font-size: 11px;
+    font-weight: 400;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: var(--shtv-gray-text);
+    transition: var(--shtv-transition-fast);
+    position: relative;
+  }
+
+  .shtv-nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 1px;
+    background: var(--shtv-bordeaux);
+    transition: var(--shtv-transition-fast);
+  }
+
+  .shtv-nav-links a:hover { color: var(--shtv-white); }
+  .shtv-nav-links a:hover::after { width: 100%; }
+
+  .shtv-nav-icons {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .shtv-icon-btn {
+    background: none;
+    border: none;
+    color: var(--shtv-gray-text);
+    cursor: pointer;
+    padding: 4px;
+    transition: var(--shtv-transition-fast);
+    display: flex;
+    align-items: center;
+  }
+
+  .shtv-icon-btn:hover { color: var(--shtv-white); }
+  .shtv-icon-btn svg { width: 20px; height: 20px; }
+
+  .shtv-cart-count {
+    position: absolute;
+    top: -2px;
+    right: -6px;
+    font-size: 9px;
+    letter-spacing: 0.05em;
+    color: var(--shtv-bordeaux);
+    font-weight: 500;
+  }
+
+  .shtv-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--shtv-white);
+    cursor: pointer;
+  }
+
+  /* HERO */
+  .shtv-hero {
+    height: 100vh;
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    overflow: hidden;
+  }
+
+  .shtv-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, #1a1a1a 0%, #0F0F0F 40%, #1a0a10 70%, #0F0F0F 100%);
+  }
+
+  .shtv-hero-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 30% 70%, rgba(116, 27, 71, 0.15) 0%, transparent 50%),
+      radial-gradient(ellipse at 70% 30%, rgba(201, 162, 39, 0.06) 0%, transparent 40%);
+  }
+
+  .shtv-hero-figure {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 45%;
+    height: 75%;
+    background: linear-gradient(160deg, #2a2a2a 0%, #1a1a1a 50%, #151515 100%);
+    clip-path: polygon(15% 0%, 100% 0%, 85% 100%, 0% 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  .shtv-hero-figure::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(15,15,15,0.8) 0%, transparent 40%);
+  }
+
+  .shtv-hero-figure-inner {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 120px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: 0.1em;
+    transform: rotate(-5deg);
+    user-select: none;
+  }
+
+  .shtv-hero-content {
+    position: relative;
+    z-index: 2;
+    padding: 0 0 120px 80px;
+    max-width: 600px;
+  }
+
+  .shtv-hero-label {
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--shtv-bordeaux);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .shtv-hero-title {
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: 32px;
+    color: var(--shtv-white);
+  }
+
+  .shtv-hero-sub {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--shtv-gray-text);
+    line-height: 1.6;
+    margin-bottom: 48px;
+    letter-spacing: 0.02em;
+  }
+
+  .shtv-hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    text-decoration: none;
+    border-bottom: 1px solid var(--shtv-bordeaux);
+    padding-bottom: 8px;
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-hero-cta:hover {
+    color: var(--shtv-bordeaux);
+    border-color: var(--shtv-white);
+    gap: 24px;
+  }
+
+  .shtv-scroll-indicator {
+    position: absolute;
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--shtv-gray-text);
+    font-size: 9px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    animation: shtv-bounce 2s ease-in-out infinite;
+  }
+
+  @keyframes shtv-bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(8px); }
+  }
+
+  /* MANIFESTO */
+  .shtv-manifesto {
+    background: var(--shtv-black);
+    padding: 160px 80px;
+    text-align: center;
+    position: relative;
+  }
+
+  .shtv-manifesto::before {
+    content: '';
+    position: absolute;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 60px;
+    background: linear-gradient(to bottom, transparent, var(--shtv-bordeaux), transparent);
+  }
+
+  .shtv-manifesto-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(20px, 3vw, 32px);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--shtv-gray-text);
+    line-height: 1.8;
+    max-width: 800px;
+    margin: 0 auto;
+    letter-spacing: 0.02em;
+  }
+
+  .shtv-manifesto-text em { color: var(--shtv-white); font-style: italic; }
+
+  .shtv-manifesto-sig {
+    margin-top: 48px;
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--shtv-bordeaux);
+  }
+
+  /* COLLECTION */
+  .shtv-collection {
+    background: var(--shtv-black);
+    padding: 80px;
+    position: relative;
+  }
+
+  .shtv-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 64px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--shtv-charcoal);
+  }
+
+  .shtv-section-title {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--shtv-gray-text);
+    font-weight: 400;
+  }
+
+  .shtv-section-title span { color: var(--shtv-white); font-weight: 500; }
+
+  .shtv-section-meta {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--shtv-charcoal);
+  }
+
+  .shtv-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--shtv-charcoal);
+  }
+
+  .shtv-product {
+    position: relative;
+    background: var(--shtv-black);
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .shtv-product-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: var(--shtv-transition);
+    position: relative;
+  }
+
+  .shtv-product:hover .shtv-product-img {
+    transform: scale(1.03);
+    filter: brightness(1.1);
+  }
+
+  .shtv-product-img::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(116,27,71,0.08) 0%, transparent 70%);
+    opacity: 0;
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-product:hover .shtv-product-img::before { opacity: 1; }
+
+  .shtv-product-placeholder {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 64px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: 0.1em;
+    user-select: none;
+  }
+
+  .shtv-product-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 24px;
+    background: linear-gradient(to top, rgba(15,15,15,0.95) 0%, rgba(15,15,15,0.6) 50%, transparent 100%);
+    opacity: 0;
+    transform: translateY(20px);
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-product:hover .shtv-product-info {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .shtv-product-name {
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .shtv-product-price {
+    font-size: 12px;
+    color: var(--shtv-gray-text);
+    letter-spacing: 0.1em;
+    font-weight: 300;
+  }
+
+  .shtv-product-cta {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    border: 1px solid var(--shtv-bordeaux);
+    padding: 16px 32px;
+    opacity: 0;
+    transition: var(--shtv-transition);
+    background: rgba(15,15,15,0.8);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .shtv-product:hover .shtv-product-cta { opacity: 1; }
+
+  .shtv-product-tag {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--shtv-gold);
+    opacity: 0;
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-product:hover .shtv-product-tag { opacity: 1; }
+
+  /* LOOKBOOK */
+  .shtv-lookbook {
+    background: var(--shtv-black);
+    padding: 160px 80px;
+    position: relative;
+  }
+
+  .shtv-lookbook-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2px;
+    background: var(--shtv-charcoal);
+    margin-top: 64px;
+  }
+
+  .shtv-lookbook-item {
+    background: var(--shtv-black);
+    aspect-ratio: 4/5;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .shtv-lookbook-item.large {
+    aspect-ratio: auto;
+    grid-row: span 2;
+  }
+
+  .shtv-lookbook-img {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(160deg, #222 0%, #181818 100%);
+    transition: var(--shtv-transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .shtv-lookbook-item:hover .shtv-lookbook-img {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+  }
+
+  .shtv-lookbook-label {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    opacity: 0;
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-lookbook-item:hover .shtv-lookbook-label { opacity: 1; }
+
+  /* EDITORIAL */
+  .shtv-editorial {
+    background: var(--shtv-black);
+    padding: 200px 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 120px;
+    align-items: center;
+  }
+
+  .shtv-editorial-img {
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, #1a1a1a 0%, #252525 50%, #1a1a1a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .shtv-editorial-img::after {
+    content: 'SHTV';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 80px;
+    color: rgba(255,255,255,0.03);
+    letter-spacing: 0.2em;
+  }
+
+  .shtv-editorial-content h3 {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--shtv-bordeaux);
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+
+  .shtv-editorial-content p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-weight: 300;
+    line-height: 1.8;
+    color: var(--shtv-gray-text);
+    margin-bottom: 24px;
+  }
+
+  .shtv-editorial-content p strong {
+    color: var(--shtv-white);
+    font-weight: 400;
+  }
+
+  .shtv-editorial-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 32px;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shtv-gray-text);
+    text-decoration: none;
+    transition: var(--shtv-transition-fast);
+  }
+
+  .shtv-editorial-cta:hover { color: var(--shtv-white); gap: 20px; }
+
+  /* FOOTER */
+  .shtv-footer {
+    background: var(--shtv-black);
+    border-top: 1px solid var(--shtv-charcoal);
+    padding: 80px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 64px;
+  }
+
+  .shtv-footer-brand {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    margin-bottom: 24px;
+  }
+
+  .shtv-footer-desc {
+    font-size: 12px;
+    line-height: 1.8;
+    color: var(--shtv-charcoal);
+    max-width: 280px;
+  }
+
+  .shtv-footer-col h4 {
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--shtv-gray-text);
+    margin-bottom: 24px;
+    font-weight: 400;
+  }
+
+  .shtv-footer-col ul { list-style: none; }
+  .shtv-footer-col li { margin-bottom: 12px; }
+
+  .shtv-footer-col a {
+    font-size: 12px;
+    color: var(--shtv-charcoal);
+    text-decoration: none;
+    transition: var(--shtv-transition-fast);
+  }
+
+  .shtv-footer-col a:hover { color: var(--shtv-white); }
+
+  .shtv-footer-newsletter {
+    margin-top: 32px;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--shtv-charcoal);
+    padding-bottom: 8px;
+  }
+
+  .shtv-footer-newsletter input {
+    background: none;
+    border: none;
+    color: var(--shtv-white);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    flex: 1;
+    outline: none;
+    font-family: inherit;
+  }
+
+  .shtv-footer-newsletter input::placeholder { color: var(--shtv-charcoal); }
+
+  .shtv-footer-newsletter button {
+    background: none;
+    border: none;
+    color: var(--shtv-bordeaux);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: var(--shtv-transition-fast);
+    font-family: inherit;
+  }
+
+  .shtv-footer-newsletter button:hover { color: var(--shtv-white); }
+
+  .shtv-footer-bottom {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 48px;
+    border-top: 1px solid var(--shtv-charcoal);
+    margin-top: 32px;
+  }
+
+  .shtv-footer-copy {
+    font-size: 10px;
+    color: var(--shtv-charcoal);
+    letter-spacing: 0.1em;
+  }
+
+  .shtv-footer-legal { display: flex; gap: 32px; }
+
+  .shtv-footer-legal a {
+    font-size: 10px;
+    color: var(--shtv-charcoal);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+    transition: var(--shtv-transition-fast);
+  }
+
+  .shtv-footer-legal a:hover { color: var(--shtv-gray-text); }
+
+  /* MOBILE MENU */
+  .shtv-mobile-menu {
+    position: fixed;
+    inset: 0;
+    background: var(--shtv-black);
+    z-index: 200;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--shtv-transition);
+  }
+
+  .shtv-mobile-menu.active { opacity: 1; pointer-events: all; }
+
+  .shtv-mobile-menu a {
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--shtv-white);
+    text-decoration: none;
+    transition: var(--shtv-transition-fast);
+  }
+
+  .shtv-mobile-menu a:hover { color: var(--shtv-bordeaux); }
+
+  .shtv-mobile-close {
+    position: absolute;
+    top: 24px;
+    right: 24px;
+    background: none;
+    border: none;
+    color: var(--shtv-white);
+    cursor: pointer;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 1024px) {
+    .shtv-grid { grid-template-columns: repeat(2, 1fr); }
+    .shtv-lookbook-grid { grid-template-columns: 1fr 1fr; }
+    .shtv-lookbook-item.large { grid-row: span 1; aspect-ratio: 4/5; }
+    .shtv-editorial { grid-template-columns: 1fr; gap: 64px; }
+    .shtv-footer { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 768px) {
+    .shtv-nav { padding: 16px 24px; }
+    .shtv-nav-links { display: none; }
+    .shtv-menu-toggle { display: block; }
+    .shtv-hero-content { padding: 0 24px 80px 24px; }
+    .shtv-hero-figure { width: 80%; right: -20%; opacity: 0.4; }
+    .shtv-collection { padding: 40px 24px; }
+    .shtv-grid { grid-template-columns: 1fr; }
+    .shtv-manifesto { padding: 100px 24px; }
+    .shtv-lookbook { padding: 100px 24px; }
+    .shtv-lookbook-grid { grid-template-columns: 1fr; }
+    .shtv-editorial { padding: 100px 24px; }
+    .shtv-footer { grid-template-columns: 1fr; padding: 60px 24px; }
+    .shtv-footer-bottom { flex-direction: column; gap: 16px; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="shtv-nav" id="shtv-nav">
+  <a href="#" class="shtv-logo">SHTV</a>
+  <ul class="shtv-nav-links">
+    <li><a href="#coleccion">Colección</a></li>
+    <li><a href="#lookbook">Lookbook</a></li>
+    <li><a href="#filosofia">Filosofía</a></li>
+    <li><a href="#cuenta">Cuenta</a></li>
+  </ul>
+  <div class="shtv-nav-icons">
+    <button class="shtv-icon-btn" aria-label="Buscar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4.35-4.35"/></svg>
+    </button>
+    <button class="shtv-icon-btn" aria-label="Carrito" style="position:relative;">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 6h15l-1.5 9h-12z"/><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M6 6L5 3H2"/></svg>
+      <span class="shtv-cart-count">3</span>
+    </button>
+    <button class="shtv-menu-toggle" id="shtv-menu-toggle" aria-label="Menú">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="shtv-mobile-menu" id="shtv-mobile-menu">
+  <button class="shtv-mobile-close" id="shtv-mobile-close">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M18 6L6 18M6 6l12 12"/></svg>
+  </button>
+  <a href="#coleccion">Colección</a>
+  <a href="#lookbook">Lookbook</a>
+  <a href="#filosofia">Filosofía</a>
+  <a href="#cuenta">Cuenta</a>
+</div>
+
+<section class="shtv-hero" id="inicio">
+  <div class="shtv-hero-bg"></div>
+  <div class="shtv-hero-figure">
+    <div class="shtv-hero-figure-inner">SHTV</div>
+  </div>
+  <div class="shtv-hero-content">
+    <div class="shtv-hero-label">Drop N°07 — Otoño 2026</div>
+    <h1 class="shtv-hero-title">Silencio<br>como forma</h1>
+    <p class="shtv-hero-sub">Prendas construidas para quienes entienden que la ausencia de ruido es el lenguaje más preciso del lujo contemporáneo.</p>
+    <a href="#coleccion" class="shtv-hero-cta">
+      Explorar colección
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="shtv-scroll-indicator">
+    <span>Scroll</span>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+  </div>
+</section>
+
+<section class="shtv-manifesto" id="filosofia">
+  <p class="shtv-manifesto-text">
+    "No diseñamos para ser vistos. Diseñamos para ser <em>recordados</em> por quienes entienden que la distinción no necesita permiso ni explicación."
+  </p>
+  <div class="shtv-manifesto-sig">— Manifiesto SHTV</div>
+</section>
+
+<section class="shtv-collection" id="coleccion">
+  <div class="shtv-section-header">
+    <h2 class="shtv-section-title"><span>Colección</span> — Drop N°07</h2>
+    <span class="shtv-section-meta">Edición limitada — 12 piezas</span>
+  </div>
+  <div class="shtv-grid">
+    <div class="shtv-product">
+      <div class="shtv-product-img"><span class="shtv-product-placeholder">I</span></div>
+      <div class="shtv-product-info">
+        <div class="shtv-product-name">Sobretodo Carbón</div>
+        <div class="shtv-product-price">€ 890</div>
+      </div>
+      <div class="shtv-product-cta">Añadir</div>
+      <div class="shtv-product-tag">Stock limitado</div>
+    </div>
+    <div class="shtv-product">
+      <div class="shtv-product-img"><span class="shtv-product-placeholder">II</span></div>
+      <div class="shtv-product-info">
+        <div class="shtv-product-name">Pantalón Ancho</div>
+        <div class="shtv-product-price">€ 420</div>
+      </div>
+      <div class="shtv-product-cta">Añadir</div>
+    </div>
+    <div class="shtv-product">
+      <div class="shtv-product-img"><span class="shtv-product-placeholder">III</span></div>
+      <div class="shtv-product-info">
+        <div class="shtv-product-name">Camisa Estructura</div>
+        <div class="shtv-product-price">€ 310</div>
+      </div>
+      <div class="shtv-product-cta">Añadir</div>
+      <div class="shtv-product-tag">Nuevo</div>
+    </div>
+    <div class="shtv-product">
+      <div class="shtv-product-img"><span class="shtv-product-placeholder">IV</span></div>
+      <div class="shtv-product-info">
+        <div class="shtv-product-name">Chaleco Lana</div>
+        <div class="shtv-product-price">€ 560</div>
+      </div>
+      <div class="shtv-product-cta">Añadir</div>
+    </div>
+    <div class="shtv-product">
+      <div class="shtv-product-img"><span class="shtv-product-placeholder">V</span></div>
+      <div class="shtv-product-info">
+        <div class="shtv-product-name">Cinturón Piel</div>
+        <div class="shtv-product-price">€ 180</div>
+      </div>
+      <div class="shtv-product-cta">Añadir</div>
+    </div>
+    <div class="shtv-product">
+      <div class="shtv-product-img"><span class="shtv-product-placeholder">VI</span></div>
+      <div class="shtv-product-info">
+        <div class="shtv-product-name">Botín Chelsea</div>
+        <div class="shtv-product-price">€ 640</div>
+      </div>
+      <div class="shtv-product-cta">Añadir</div>
+      <div class="shtv-product-tag">Edición N°3 de 12</div>
+    </div>
+  </div>
+</section>
+
+<section class="shtv-lookbook" id="lookbook">
+  <div class="shtv-section-header">
+    <h2 class="shtv-section-title"><span>Lookbook</span> — Otoño 2026</h2>
+    <span class="shtv-section-meta">Fotografía — Estudio SHTV</span>
+  </div>
+  <div class="shtv-lookbook-grid">
+    <div class="shtv-lookbook-item large">
+      <div class="shtv-lookbook-img"><span class="shtv-product-placeholder" style="font-size:100px;">01</span></div>
+      <div class="shtv-lookbook-label">Encuadre cerrado — Movimiento</div>
+    </div>
+    <div class="shtv-lookbook-item">
+      <div class="shtv-lookbook-img"><span class="shtv-product-placeholder">02</span></div>
+      <div class="shtv-lookbook-label">Caída de tela</div>
+    </div>
+    <div class="shtv-lookbook-item">
+      <div class="shtv-lookbook-img"><span class="shtv-product-placeholder">03</span></div>
+      <div class="shtv-lookbook-label">Detalle bordó</div>
+    </div>
+  </div>
+</section>
+
+<section class="shtv-editorial">
+  <div class="shtv-editorial-img"></div>
+  <div class="shtv-editorial-content">
+    <h3>Filosofía de marca</h3>
+    <p>Cada pieza de <strong>SHTV</strong> se concibe como un objeto editorial, no como una unidad de stock. Rechazamos la urgencia visual del fast fashion en favor de una permanencia que solo entiende quien valora el silencio.</p>
+    <p>Nuestros drops son ediciones numeradas. Cuando una pieza agota, no se reproduce. No hay re-stock. No hay contadores falsos. Solo la certeza de que poseer algo que no todos podrán.</p>
+    <a href="#" class="shtv-editorial-cta">
+      Leer manifiesto completo
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+</section>
+
+<footer class="shtv-footer">
+  <div>
+    <div class="shtv-footer-brand">SHTV</div>
+    <p class="shtv-footer-desc">Moda editorial de lujo silencioso. Drops numerados, piezas irrepetibles, silencio como lenguaje.</p>
+    <div class="shtv-footer-newsletter">
+      <input type="email" placeholder="Email para acceso exclusivo">
+      <button>Unirse</button>
+    </div>
+  </div>
+  <div class="shtv-footer-col">
+    <h4>Navegar</h4>
+    <ul>
+      <li><a href="#coleccion">Colección</a></li>
+      <li><a href="#lookbook">Lookbook</a></li>
+      <li><a href="#filosofia">Filosofía</a></li>
+      <li><a href="#">Archivo</a></li>
+    </ul>
+  </div>
+  <div class="shtv-footer-col">
+    <h4>Legal</h4>
+    <ul>
+      <li><a href="#">Envíos</a></li>
+      <li><a href="#">Devoluciones</a></li>
+      <li><a href="#">Privacidad</a></li>
+      <li><a href="#">Términos</a></li>
+    </ul>
+  </div>
+  <div class="shtv-footer-col">
+    <h4>Contacto</h4>
+    <ul>
+      <li><a href="#">Atención al cliente</a></li>
+      <li><a href="#">Prensa</a></li>
+      <li><a href="#">Mayoristas</a></li>
+    </ul>
+  </div>
+  <div class="shtv-footer-bottom">
+    <span class="shtv-footer-copy">© 2026 SHTV. Todos los derechos reservados.</span>
+    <div class="shtv-footer-legal">
+      <a href="#">Privacidad</a>
+      <a href="#">Cookies</a>
+      <a href="#">Accesibilidad</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function() {
+    const nav = document.getElementById('shtv-nav');
+    const menuToggle = document.getElementById('shtv-menu-toggle');
+    const mobileMenu = document.getElementById('shtv-mobile-menu');
+    const mobileClose = document.getElementById('shtv-mobile-close');
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > 50) nav.classList.add('scrolled');
+      else nav.classList.remove('scrolled');
+    });
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => mobileMenu.classList.add('active'));
+      mobileClose.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    }
+
+    // IntersectionObserver para animaciones de entrada
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.shtv-product, .shtv-manifesto, .shtv-editorial').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(30px)';
+      el.style.transition = 'opacity 800ms cubic-bezier(0.4,0,0.2,1), transform 800ms cubic-bezier(0.4,0,0.2,1)';
+      observer.observe(el);
+    });
+  })();
+</script>
+
+</body>
+</html>
